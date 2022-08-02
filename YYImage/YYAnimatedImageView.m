@@ -525,12 +525,6 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     }
 }
 
-- (void)displayLayer:(CALayer *)layer {
-    if (_curFrame) {
-        layer.contents = (__bridge id)_curFrame.CGImage;
-    }
-}
-
 - (void)setContentsRect:(CGRect)rect forImage:(UIImage *)image{
     CGRect layerRect = CGRectMake(0, 0, 1, 1);
     if (image) {
@@ -667,5 +661,17 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     multi = (ani && ((UIImage <YYAnimatedImage> *)self.highlightedImage).animatedImageFrameCount > 1);
     if (multi) [aCoder encodeObject:self.highlightedImage forKey:@"YYHighlightedAnimatedImage"];
 }
+
+-(void)displayLayer:(CALayer *)layer {
+    UIImage *currentFrame = _curFrame;
+    if (!currentFrame) {
+        currentFrame = self.image;
+    }
+    if (currentFrame) {
+        layer.contentsScale = currentFrame.scale;
+        layer.contents = (__bridge id)currentFrame.CGImage;
+    }
+}
+
 
 @end
